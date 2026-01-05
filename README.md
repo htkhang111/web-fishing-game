@@ -51,7 +51,7 @@
 
 **B1: Clone hoặc tải dự án về máy**
 ```bash
-git clone [https://github.com/USERNAME/web-fishing-game.git](https://github.com/USERNAME/web-fishing-game.git)
+git clone https://github.com/htkhang111/web-fishing-game.git
 cd web-fishing-game
 ```
 
@@ -60,7 +60,9 @@ cd web-fishing-game
 # Windows
 python -m venv venv
 venv\Scripts\activate
+```
 
+```bash
 # macOS/Linux
 python3 -m venv venv
 source venv/bin/activate
