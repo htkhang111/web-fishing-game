@@ -1,109 +1,115 @@
-# 🎣 Web Fishing Game
+<div align="center">
 
-**Web Fishing Game** là một trò chơi câu cá chạy trên nền web được xây dựng bằng **Python (Flask)** cho phía server và **HTML/CSS/JS** cho giao diện người dùng. Người chơi sẽ vào vai một ngư dân, thực hiện các minigame để câu cá, bán lấy vàng và nâng cấp trang bị.
+# 🎣 WEB FISHING GAME
 
----
+![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-3.0.0-000000?style=for-the-badge&logo=flask&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
 
-## 📋 1. Yêu Cầu Hệ Thống
+**Trò chơi câu cá giả lập phản xạ, xây dựng trên nền tảng Flask Framework.**
 
-* **Python**: Phiên bản 3.x trở lên.
-* **Hệ điều hành**: Windows, macOS, hoặc Linux.
-* **Trình duyệt web**: Chrome, Firefox, Edge, Safari, v.v.
+[Giới Thiệu](#-giới-thiệu) •
+[Cài Đặt](#-cài-đặt) •
+[Cách Chơi](#-cách-chơi) •
+[Cấu Trúc](#-cấu-trúc-dự-án)
 
----
-
-## 📂 2. Cấu Trúc Dự Án
-
-Cấu trúc thư mục của dự án được chia tách rõ ràng:
-
-* **`backend/`**: Chứa mã nguồn server (Flask API, Database Model, Logic game).
-    * `run.py`: File khởi động server.
-    * `instance/fishing.db`: Database SQLite (tự động tạo khi chạy lần đầu).
-* **`frontend/`**: Chứa giao diện người dùng.
-    * `templates/`: Các file HTML.
-    * `static/`: Các file CSS, JavaScript, hình ảnh.
+</div>
 
 ---
 
-## ⚙️ 3. Hướng Dẫn Cài Đặt
+## 📖 Giới Thiệu
 
-Làm theo các bước sau để thiết lập môi trường chạy game:
+**Web Fishing Game** đưa người chơi vào vai một ngư dân tài ba. Không chỉ là click chuột, bạn cần sự tập trung cao độ và phản xạ nhanh nhạy để chinh phục những loài thủy quái hiếm có.
 
-### Bước 1: Mở terminal tại thư mục gốc
-Đảm bảo bạn đang đứng ở thư mục chứa cả 2 thư mục con là `backend` và `frontend`.
+**Tính năng nổi bật:**
 
-### Bước 2: Tạo môi trường ảo (Virtual Environment) - *Khuyên dùng*
-Giúp tránh xung đột thư viện với các dự án khác.
+- 🎮 **Minigame kép:** Kết hợp giữa _Nhảy Audition_ (Mũi tên) và _Canh lực_ (Timing).
+- 🎒 **Hệ thống túi đồ:** Lưu trữ chiến lợi phẩm, bán cá kiếm Vàng.
+- 📈 **Nâng cấp:** Tích lũy kinh nghiệm (EXP) và tiền vàng (Gold).
+- 🔒 **Hệ thống tài khoản:** Đăng ký/Đăng nhập bảo mật, lưu progress người chơi.
 
-* **Windows:**
-    ```bash
-    python -m venv venv
-    venv\Scripts\activate
-    ```
-* **macOS / Linux:**
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
+---
 
-### Bước 3: Cài đặt các thư viện cần thiết
-Chạy lệnh sau để cài đặt Flask và các thư viện hỗ trợ (được liệt kê trong `requirements.txt`):
+## 📸 Hình Ảnh Demo
 
+_(Khu vực này để bạn chèn ảnh chụp màn hình game sau này)_
+
+|                                    Màn Hình Chờ                                    |                                     Minigame Câu Cá                                      |
+| :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------: |
+| <img src="https://placehold.co/600x400?text=Sanh+Cho" alt="Sảnh Chờ" width="100%"> | <img src="https://placehold.co/600x400?text=Minigame+Arrow" alt="Minigame" width="100%"> |
+
+---
+
+## 🛠 Cài Đặt & Chạy Game
+
+### 1. Yêu Cầu
+
+- Python 3.x
+- Git (Tùy chọn)
+
+### 2. Các Bước Cài Đặt
+
+**B1: Clone hoặc tải dự án về máy**
 ```bash
+git clone [https://github.com/USERNAME/web-fishing-game.git](https://github.com/USERNAME/web-fishing-game.git)
+cd web-fishing-game
+```
+
+**B2: Thiết lập môi trường ảo**
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+**B3: Cài đặt thư viện**
 pip install -r backend/requirements.txt
 
-🚀 4. Hướng Dẫn Chạy Game
-Mỗi khi muốn chơi, bạn thực hiện các bước sau:
-
-Di chuyển vào thư mục backend:
-
-Bash
-
+### 3. Khởi Chạy
+Di chuyển vào thư mục backend và chạy server:
+```bash
 cd backend
-Khởi chạy Server:
-
-Bash
-
 python run.py
-Lưu ý: Lần chạy đầu tiên, hệ thống sẽ tự động tạo Database và nạp dữ liệu cá mẫu (Cá Rô, Cá Trắm, Cá Mập...) nên bạn không cần cấu hình DB thủ công.
+```
 
-Vào game:
+🔥 Lưu ý: Lần chạy đầu tiên, hệ thống sẽ tự động tạo Database và nạp dữ liệu cá mẫu. Bạn không cần setup gì thêm!
 
-Mở trình duyệt và truy cập địa chỉ: http://127.0.0.1:5000
+Truy cập game tại: http://127.0.0.1:5000
 
-Nếu chưa có tài khoản, hãy nhấn Đăng ký để tạo nhân vật mới (bạn sẽ được tặng 100 Vàng và Cần câu Lv.1).
+🎮 Cách Chơi
+**Quy trình câu cá gồm 2 giai đoạn thử thách:**
+### Giai Đoạn 1: Phản Xạ (Arrow Phase) Nhìn kỹ màu sắc của mũi tên xuất hiện trên màn hình:Loại Mũi Tên, Màu Sắc, Hành Động Cần Làm
+* Ví Dụ:
+- Bình Thường🟢 Xanh Lá / 🔵 Lam Bấm CÙNG CHIỀU - Thấy ⬆️ bấm ⬆️
+- Cạm Bẫy (TRAP)🔴 Đỏ Bấm NGƯỢC CHIỀU Thấy ⬆️ bấm ⬇️
 
-🎮 5. Hướng Dẫn Chơi (Gameplay)
-Trò chơi mô phỏng việc câu cá thông qua 2 giai đoạn minigame phản xạ:
+### Giai Đoạn 2: Canh Lực (Timing Phase)
+- Thanh trượt (Slider) sẽ chạy qua lại liên tục.
+- Bấm phím Space (Cách) khi con trỏ nằm trong Vùng Màu Vàng.
 
-Bước 1: Quăng Cần (Giai đoạn Nhảy Nút)
-Sau khi bấm "QUĂNG CẦN", một chuỗi mũi tên sẽ hiện ra. Bạn dùng 4 phím mũi tên trên bàn phím để thao tác:
+```bash
+web-fishing-game/
+├── backend/                  # Xử lý Logic & API
+│   ├── app/
+│   │   ├── models.py         # Cấu trúc Database (User, Fish, Inventory)
+│   │   ├── routes/           # Định nghĩa đường dẫn (URL)
+│   │   └── __init__.py       # Khởi tạo Flask App
+│   ├── instance/             # Chứa file Database SQLite
+│   ├── run.py                # File khởi chạy Server
+│   └── requirements.txt      # Danh sách thư viện
+│
+├── frontend/                 # Giao diện người dùng
+│   ├── static/
+│   │   ├── css/              # Giao diện đẹp (Style)
+│   │   └── js/               # Xử lý hiệu ứng động
+│   └── templates/            # Các file HTML (Login, Game...)
+│
+└── README.md                 # Hướng dẫn sử dụng
+````
 
-🟢 Mũi tên Xanh (Lá/Dương): Bấm phím mũi tên CÙNG CHIỀU với hình hiển thị.
-
-🔴 Mũi tên Đỏ (TRAP): Đây là bẫy! Bạn phải bấm phím mũi tên NGƯỢC CHIỀU (Ví dụ: Thấy ⬆️ Đỏ thì phải bấm ⬇️).
-
-Nếu bấm sai, cá sẽ chạy mất ngay lập tức!
-
-Bước 2: Giật Cá (Giai đoạn Canh Lực - Space)
-Nếu vượt qua Bước 1, một thanh trượt (slider) sẽ xuất hiện.
-
-Một con trỏ sẽ chạy qua chạy lại liên tục.
-
-Nhiệm vụ: Bấm phím Space (Cách) đúng lúc con trỏ nằm trong vùng màu vàng.
-
-Cá càng hiếm, thanh trượt chạy càng nhanh hoặc vùng vàng càng nhỏ.
-
-Bước 3: Thu Hoạch & Bán Cá
-Nếu thành công cả 2 bước, bạn sẽ nhận được cá và điểm kinh nghiệm (EXP).
-
-Cá câu được sẽ nằm trong Túi Đồ (bên dưới màn hình chơi).
-
-Bạn có thể bấm nút Bán ở từng con cá để đổi lấy Vàng.
-
-🛠️ Xử Lý Lỗi Thường Gặp
-Lỗi ModuleNotFoundError: Do chưa cài đủ thư viện. Hãy kiểm tra lại Bước 3 phần Cài đặt.
-
-Lỗi no such table: Thường do DB chưa khởi tạo kịp hoặc bị lỗi file. Hãy xóa file backend/instance/fishing.db đi, sau đó chạy lại lệnh python run.py để server tự tạo lại DB mới sạch sẽ.
-
-Lỗi không tìm thấy template/static: Đảm bảo bạn đang chạy file run.py từ bên trong thư mục backend, và cấu trúc thư mục frontend nằm đúng vị trí ngang hàng với backend.
+Code by Trương Khuynh Hàn
