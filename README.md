@@ -41,7 +41,7 @@ _(Khu vực này để bạn chèn ảnh chụp màn hình game sau này)_
 
 ---
 
-## 🛠 Cài Đặt & Chạy Game
+## 🛠 Cài Đặt
 
 ### 1. Yêu Cầu
 
@@ -81,7 +81,8 @@ python run.py
 
 Truy cập game tại: http://127.0.0.1:5000
 
-🎮 Cách Chơi
+## 🎮 Cách Chơi
+
 **Quy trình câu cá gồm 2 giai đoạn thử thách:**
 ### Giai Đoạn 1: Phản Xạ (Arrow Phase) Nhìn kỹ màu sắc của mũi tên xuất hiện trên màn hình:Loại Mũi Tên, Màu Sắc, Hành Động Cần Làm
 * Ví Dụ:
@@ -92,6 +93,7 @@ Truy cập game tại: http://127.0.0.1:5000
 - Thanh trượt (Slider) sẽ chạy qua lại liên tục.
 - Bấm phím Space (Cách) khi con trỏ nằm trong Vùng Màu Vàng.
 
+## Cấu trúc dự án
 ```bash
 web-fishing-game/
 ├── backend/                  # Xử lý Logic & API
