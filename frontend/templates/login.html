@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if is_register %}Đăng Ký - Fishing Game{% else %}Đăng Nhập - Fishing Game{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-box">
+        <h2>{% if is_register %}ĐĂNG KÝ NGƯ DÂN{% else %}ĐĂNG NHẬP{% endif %}</h2>
+        
+        <form method="POST" action="">
+            <div class="input-group">
+                <label for="username">Tên nhân vật</label>
+                <input type="text" id="username" name="username" required placeholder="Nhập tên...">
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Mật khẩu</label>
+                <input type="password" id="password" name="password" required placeholder="********">
+            </div>
+
+            <button type="submit" class="btn-primary">
+                {% if is_register %}TẠO TÀI KHOẢN{% else %}VÀO GAME NGAY{% endif %}
+            </button>
+        </form>
+
+        <div class="switch-link">
+            {% if is_register %}
+                <p>Đã có tài khoản? <a href="{{ url_for('auth.login') }}">Đăng nhập tại đây</a></p>
+            {% else %}
+                <p>Chưa có tài khoản? <a href="{{ url_for('auth.register') }}">Đăng ký ngay</a></p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

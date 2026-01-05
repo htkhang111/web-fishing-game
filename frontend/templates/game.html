@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Khu Vực Câu Cá{% endblock %}
+
+{% block content %}
+<div class="game-wrapper">
+    <div class="stats-bar">
+        <div class="user-info">
+            <span class="user-name">👤 {{ current_user.username }}</span>
+            <span class="user-lvl">Lv.{{ current_user.level }}</span>
+        </div>
+        <div class="resources">
+            <span class="gold">💰 <span id="gold-display">{{ current_user.gold }}</span> G</span>
+            <span class="exp">EXP: {{ current_user.exp }}</span>
+        </div>
+        <a href="{{ url_for('auth.logout') }}" class="btn-logout" style="color: #ff6b6b; margin-left: 10px;">[Thoát]</a>
+    </div>
+
+    <div class="fishing-stage">
+        <div class="ocean-view">
+            <div class="bobber" id="bobber" style="font-size: 50px;">🎣</div>
+        </div>
+
+        <br>
+        <button id="btn-cast" class="btn-cast" onclick="castLine()">
+            QUĂNG CẦN !
+        </button>
+
+        <div id="result-popup" class="result-popup" style="display: none;">
+            <h3 style="color: yellow;">BẠN ĐÃ CÂU ĐƯỢC!</h3>
+            <div style="font-size: 60px; margin: 10px;">🐟</div>
+            <p id="fish-name-display" class="fish-name" style="font-size: 1.2em; font-weight: bold;">Cá...</p>
+            <p id="fish-rarity-display" class="rarity-stars" style="color: orange;">⭐⭐⭐</p>
+            <button onclick="closePopup()" style="padding: 10px 20px; cursor: pointer;">Tiếp tục câu</button>
+        </div>
+    </div>
+
+    <hr style="border-color: #4facfe; margin: 20px 0;">
+
+    <div class="inventory-panel">
+        <h3>🎒 Túi Đồ Của Bạn</h3>
+        <div class="inventory-grid" id="inventory-list">
+            {% for item in inventory %}
+            <div class="inv-item" style="display: inline-block; margin: 10px; padding: 10px; border: 1px solid white; border-radius: 5px; background: rgba(0,0,0,0.5);">
+                <div class="item-icon">🐟</div>
+                <div class="item-info">
+                    <strong>{{ item.fish_details.name }}</strong>
+                    <span class="qty" style="color: #aaa;">x{{ item.quantity }}</span>
+                </div>
+                <button class="btn-sell" onclick="sellFish({{ item.fish_id }})" style="background: green; color: white; cursor: pointer; border: none; padding: 5px;">
+                    Bán ({{ item.fish_details.base_price }}G)
+                </button>
+            </div>
+            {% else %}
+            <p style="color: #ccc;">Túi đồ đang trống. Hãy đi câu cá!</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+    // Hàm gọi API câu cá
+    async function castLine() {
+        const btn = document.getElementById('btn-cast');
+        const bobber = document.getElementById('bobber');
+        
+        btn.disabled = true;
+        btn.innerText = "Đang chờ cá cắn...";
+        
+        // Giả vờ chờ 1 giây cho hồi hộp
+        setTimeout(async () => {
+            try {
+                const response = await fetch('/api/catch', { method: 'POST' });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showResult(data);
+                    // Tự động reload trang sau 2s để cập nhật túi đồ (cách đơn giản nhất)
+                    setTimeout(() => location.reload(), 2000); 
+                } else {
+                    alert('Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Lỗi kết nối server!');
+            }
+            btn.disabled = false;
+            btn.innerText = "QUĂNG CẦN !";
+        }, 1000);
+    }
+
+    // Hàm hiện popup kết quả
+    function showResult(data) {
+        const popup = document.getElementById('result-popup');
+        document.getElementById('fish-name-display').innerText = data.fish_name;
+        document.getElementById('fish-rarity-display').innerText = "⭐".repeat(data.rarity);
+        popup.style.display = 'block';
+    }
+
+    function closePopup() {
+        document.getElementById('result-popup').style.display = 'none';
+    }
+
+    // Hàm bán cá
+    async function sellFish(fishId) {
+        if(!confirm("Bán con này nha?")) return;
+
+        const response = await fetch('/api/sell', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ fish_id: fishId })
+        });
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            // Cập nhật lại tiền hiển thị
+            document.getElementById('gold-display').innerText = data.new_gold;
+            location.reload(); // Reload để cập nhật lại túi đồ
+        } else {
+            alert(data.message);
+        }
+    }
+</script>
+{% endblock %}
