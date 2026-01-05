@@ -12,7 +12,7 @@
 [Giới Thiệu](#-giới-thiệu) •
 [Cài Đặt](#-cài-đặt) •
 [Cách Chơi](#-cách-chơi) •
-[Cấu Trúc](#-cấu-trúc-dự-án)
+[Cấu Trúc](#-cấu-trúc) •
 
 </div>
 
@@ -93,7 +93,7 @@ Truy cập game tại: http://127.0.0.1:5000
 - Thanh trượt (Slider) sẽ chạy qua lại liên tục.
 - Bấm phím Space (Cách) khi con trỏ nằm trong Vùng Màu Vàng.
 
-## Cấu trúc dự án
+## Cấu trúc
 ```bash
 web-fishing-game/
 ├── backend/                  # Xử lý Logic & API
