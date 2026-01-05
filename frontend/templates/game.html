@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block title %}Khu Vực Câu Cá{% endblock %}
 
 {% block content %}
@@ -17,28 +16,46 @@
     </div>
 
     <div class="fishing-stage">
-        <div class="ocean-view">
-            <div class="bobber" id="bobber" style="font-size: 50px;">🎣</div>
+        <div id="idle-state">
+            <div class="bobber" style="font-size: 60px; animation: float 2s infinite;">🎣</div>
+            <br><br>
+            <button id="btn-cast" class="btn-cast" onclick="startFishing()">QUĂNG CẦN !</button>
         </div>
 
-        <br>
-        <button id="btn-cast" class="btn-cast" onclick="castLine()">
-            QUĂNG CẦN !
-        </button>
+        <div id="minigame-area" style="display: none;">
+            
+            <div id="arrow-phase">
+                <h3 style="color: #4facfe;">GIAI ĐOẠN 1: NHẢY NÚT!</h3>
+                <p style="font-size: 0.8rem; color: #ccc;">(Xanh: Bấm đúng - <span style="color: #ff4444;">Đỏ: Bấm ngược</span>)</p>
+                
+                <div id="arrow-container" class="arrow-container">
+                    </div>
+            </div>
+
+            <div id="timing-phase" style="display: none;">
+                <h3 style="color: #ffd700;">GIAI ĐOẠN 2: BẤM SPACE!</h3>
+                <div class="slider-container">
+                    <div class="slider-bar">
+                        <div class="target-zone"></div>
+                        <div id="slider-cursor" class="slider-cursor"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
 
         <div id="result-popup" class="result-popup" style="display: none;">
-            <h3 style="color: yellow;">BẠN ĐÃ CÂU ĐƯỢC!</h3>
-            <div style="font-size: 60px; margin: 10px;">🐟</div>
-            <p id="fish-name-display" class="fish-name" style="font-size: 1.2em; font-weight: bold;">Cá...</p>
-            <p id="fish-rarity-display" class="rarity-stars" style="color: orange;">⭐⭐⭐</p>
-            <button onclick="closePopup()" style="padding: 10px 20px; cursor: pointer;">Tiếp tục câu</button>
+            <h3 id="result-title" style="color: yellow;">BẠN ĐÃ CÂU ĐƯỢC!</h3>
+            <div id="result-icon" style="font-size: 60px; margin: 10px;">🐟</div>
+            <p id="fish-name-display" class="fish-name" style="font-size: 1.2em; font-weight: bold;"></p>
+            <p id="fish-rarity-display" class="rarity-stars" style="color: orange;"></p>
+            <button onclick="closePopup()" style="padding: 10px 20px; cursor: pointer;">Tiếp tục</button>
         </div>
     </div>
 
     <hr style="border-color: #4facfe; margin: 20px 0;">
-
     <div class="inventory-panel">
-        <h3>🎒 Túi Đồ Của Bạn</h3>
+        <h3>🎒 Túi Đồ</h3>
         <div class="inventory-grid" id="inventory-list">
             {% for item in inventory %}
             <div class="inv-item" style="display: inline-block; margin: 10px; padding: 10px; border: 1px solid white; border-radius: 5px; background: rgba(0,0,0,0.5);">
@@ -52,72 +69,230 @@
                 </button>
             </div>
             {% else %}
-            <p style="color: #ccc;">Túi đồ đang trống. Hãy đi câu cá!</p>
+            <p style="color: #ccc;">Túi đồ đang trống.</p>
             {% endfor %}
         </div>
     </div>
 </div>
-{% endblock %} {% block scripts %}
-<script>
-    // Hàm gọi API câu cá
-    async function castLine() {
-        const btn = document.getElementById('btn-cast');
-        const bobber = document.getElementById('bobber');
-        
-        btn.disabled = true;
-        btn.innerText = "Đang chờ cá cắn...";
-        
-        // Giả vờ chờ 1 giây cho hồi hộp
-        setTimeout(async () => {
-            try {
-                const response = await fetch('/api/catch', { method: 'POST' });
-                const data = await response.json();
+{% endblock %}
 
-                if (data.status === 'success') {
-                    showResult(data);
-                    // Tự động reload trang sau 2s để cập nhật túi đồ (cách đơn giản nhất)
-                    setTimeout(() => location.reload(), 2000); 
-                } else {
-                    alert('Lỗi: ' + data.message);
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Lỗi kết nối server!');
+{% block scripts %}
+<script>
+    // --- VARIABLES ---
+    let currentSequence = []; // Chứa danh sách mũi tên server gửi về
+    let userInputs = [];      // Chứa nút user bấm
+    let currentStep = 0;      // Đang bấm đến mũi tên số mấy
+    
+    let sliderInterval = null;
+    let sliderPos = 0;
+    let sliderDirection = 1; // 1: phải, -1: trái
+
+    // Map phím bàn phím sang hướng
+    const KEY_MAP = {
+        'ArrowUp': 'UP', 'ArrowDown': 'DOWN', 
+        'ArrowLeft': 'LEFT', 'ArrowRight': 'RIGHT'
+    };
+
+    // --- FUNCTION 1: BẮT ĐẦU CÂU (Gọi API Cast) ---
+    async function startFishing() {
+        document.getElementById('idle-state').style.display = 'none';
+        document.getElementById('minigame-area').style.display = 'block';
+        document.getElementById('arrow-phase').style.display = 'block';
+        document.getElementById('timing-phase').style.display = 'none';
+
+        try {
+            const res = await fetch('/api/cast', { method: 'POST' });
+            const data = await res.json();
+            
+            if (data.status === 'success') {
+                currentSequence = data.sequence;
+                userInputs = [];
+                currentStep = 0;
+                renderArrows(currentSequence);
+                
+                // Bắt sự kiện bàn phím
+                document.addEventListener('keydown', handleArrowKey);
+            } else {
+                alert(data.message);
+                resetGame();
             }
-            btn.disabled = false;
-            btn.innerText = "QUĂNG CẦN !";
-        }, 1000);
+        } catch (e) { console.error(e); alert('Lỗi mạng!'); resetGame(); }
     }
 
-    // Hàm hiện popup kết quả
-    function showResult(data) {
+    // --- RENDER MŨI TÊN ---
+    function renderArrows(seq) {
+        const container = document.getElementById('arrow-container');
+        container.innerHTML = ''; // Xóa cũ
+        
+        seq.forEach((item, index) => {
+            const arrow = document.createElement('div');
+            arrow.classList.add('arrow-icon');
+            arrow.classList.add('arrow-' + item.color); // class: arrow-green, arrow-red...
+            
+            // Icon unicode
+            let icon = '';
+            if (item.dir === 'UP') icon = '⬆️';
+            if (item.dir === 'DOWN') icon = '⬇️';
+            if (item.dir === 'LEFT') icon = '⬅️';
+            if (item.dir === 'RIGHT') icon = '➡️';
+            
+            arrow.innerText = icon;
+            arrow.id = 'arrow-' + index; // Đánh dấu ID để đổi màu khi bấm đúng
+            container.appendChild(arrow);
+        });
+    }
+
+    // --- XỬ LÝ PHÍM BẤM (PHASE 1) ---
+    function handleArrowKey(e) {
+        const pressedDir = KEY_MAP[e.code];
+        if (!pressedDir) return; // Không phải phím mũi tên thì bỏ qua
+        
+        e.preventDefault(); // Chặn cuộn trang
+
+        const currentTarget = currentSequence[currentStep];
+        
+        // Logic kiểm tra ĐÚNG/SAI ngay tại Client (Visual feedback)
+        let isCorrect = false;
+
+        if (currentTarget.color === 'red') {
+            // TRAP: Phải bấm ngược
+            if (currentTarget.dir === 'UP' && pressedDir === 'DOWN') isCorrect = true;
+            if (currentTarget.dir === 'DOWN' && pressedDir === 'UP') isCorrect = true;
+            if (currentTarget.dir === 'LEFT' && pressedDir === 'RIGHT') isCorrect = true;
+            if (currentTarget.dir === 'RIGHT' && pressedDir === 'LEFT') isCorrect = true;
+        } else {
+            // THƯỜNG: Bấm đúng hướng
+            if (currentTarget.dir === pressedDir) isCorrect = true;
+        }
+
+        if (isCorrect) {
+            // Hiệu ứng bấm đúng: Sáng lên hoặc mờ đi
+            document.getElementById('arrow-' + currentStep).style.opacity = '0.3';
+            document.getElementById('arrow-' + currentStep).style.transform = 'scale(1.2)';
+            
+            userInputs.push(pressedDir); // Lưu lại phím đã bấm (để gửi lên server check)
+            currentStep++;
+
+            // Nếu đã bấm hết chuỗi -> Sang Phase 2
+            if (currentStep >= currentSequence.length) {
+                document.removeEventListener('keydown', handleArrowKey);
+                startTimingPhase();
+            }
+        } else {
+            // Bấm sai -> Thua luôn (hoặc reset)
+            failGame("Bấm sai nút rồi! Cá chạy mất!");
+        }
+    }
+
+    // --- PHASE 2: THANH TRƯỢT (SPACE) ---
+    function startTimingPhase() {
+        document.getElementById('arrow-phase').style.display = 'none';
+        document.getElementById('timing-phase').style.display = 'block';
+        
+        const cursor = document.getElementById('slider-cursor');
+        sliderPos = 0;
+        
+        // Chạy thanh trượt qua lại
+        sliderInterval = setInterval(() => {
+            sliderPos += 2 * sliderDirection; // Tốc độ
+            if (sliderPos > 95) sliderDirection = -1;
+            if (sliderPos < 0) sliderDirection = 1;
+            cursor.style.left = sliderPos + '%';
+        }, 16); // 60fps
+
+        document.addEventListener('keydown', handleSpaceKey);
+    }
+
+    async function handleSpaceKey(e) {
+        if (e.code === 'Space') {
+            e.preventDefault();
+            clearInterval(sliderInterval); // Dừng thanh trượt
+            document.removeEventListener('keydown', handleSpaceKey);
+
+            // Kiểm tra vị trí (Vùng vàng thường ở giữa 40% - 60%)
+            let successStep2 = false;
+            if (sliderPos >= 40 && sliderPos <= 60) {
+                successStep2 = true;
+            }
+
+            // Gửi kết quả lên Server
+            submitCatch(successStep2);
+        }
+    }
+
+    // --- GỬI KẾT QUẢ CUỐI CÙNG ---
+    async function submitCatch(timingSuccess) {
+        try {
+            const res = await fetch('/api/catch', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    inputs: userInputs,
+                    timing_success: timingSuccess
+                })
+            });
+            const data = await res.json();
+            
+            if (data.status === 'success') {
+                showResult(data, true);
+            } else {
+                showResult(data, false);
+            }
+        } catch(err) { console.error(err); }
+    }
+
+    // --- HIỆN KẾT QUẢ & RESET ---
+    function showResult(data, isWin) {
         const popup = document.getElementById('result-popup');
-        document.getElementById('fish-name-display').innerText = data.fish_name;
-        document.getElementById('fish-rarity-display').innerText = "⭐".repeat(data.rarity);
+        const title = document.getElementById('result-title');
+        
+        if (isWin) {
+            title.innerText = "BẮT ĐƯỢC RỒI!";
+            title.style.color = "yellow";
+            document.getElementById('fish-name-display').innerText = data.fish_name;
+            document.getElementById('fish-rarity-display').innerText = "⭐".repeat(data.rarity);
+        } else {
+            title.innerText = "THẤT BẠI!";
+            title.style.color = "red";
+            document.getElementById('fish-name-display').innerText = data.message;
+            document.getElementById('fish-rarity-display').innerText = "";
+        }
+        
         popup.style.display = 'block';
+        document.getElementById('minigame-area').style.display = 'none';
+    }
+
+    function failGame(msg) {
+        document.removeEventListener('keydown', handleArrowKey);
+        document.removeEventListener('keydown', handleSpaceKey);
+        clearInterval(sliderInterval);
+        showResult({message: msg}, false);
     }
 
     function closePopup() {
         document.getElementById('result-popup').style.display = 'none';
+        resetGame();
+        location.reload(); // Reload để update túi đồ
     }
 
-    // Hàm bán cá
+    function resetGame() {
+        document.getElementById('idle-state').style.display = 'block';
+        document.getElementById('minigame-area').style.display = 'none';
+        userInputs = [];
+    }
+    
+    // Giữ lại hàm bán cá cũ
     async function sellFish(fishId) {
         if(!confirm("Bán con này nha?")) return;
-
         const response = await fetch('/api/sell', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ fish_id: fishId })
         });
         const data = await response.json();
-        
         if (data.status === 'success') {
-            // Cập nhật lại tiền hiển thị
             document.getElementById('gold-display').innerText = data.new_gold;
-            location.reload(); // Reload để cập nhật lại túi đồ
-        } else {
-            alert(data.message);
+            location.reload();
         }
     }
 </script>
