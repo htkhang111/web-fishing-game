@@ -1,6 +1,6 @@
 /* --- MINIGAME STYLES --- */
 
-/* Container chứa mũi tên */
+/* --- MINIGAME STYLES (Giữ nguyên) --- */
 .arrow-container {
     display: flex;
     justify-content: center;
@@ -9,7 +9,6 @@
     min-height: 60px;
 }
 
-/* Base Mũi tên */
 .arrow-icon {
     font-size: 3rem;
     font-weight: bold;
@@ -20,25 +19,23 @@
     border: 3px solid transparent;
 }
 
-/* Màu sắc mũi tên */
 .arrow-green {
-    color: #2ecc71; /* Xanh lá */
+    color: #2ecc71;
     border-color: #2ecc71;
     text-shadow: 0 0 10px #2ecc71;
 }
 
 .arrow-blue {
-    color: #3498db; /* Xanh dương */
+    color: #3498db;
     border-color: #3498db;
     text-shadow: 0 0 10px #3498db;
 }
 
-/* TRAP - Màu đỏ */
 .arrow-red {
-    color: #e74c3c; /* Đỏ */
+    color: #e74c3c;
     border-color: #e74c3c;
     text-shadow: 0 0 15px #e74c3c;
-    animation: pulse 0.5s infinite alternate; /* Nhấp nháy cảnh báo */
+    animation: pulse 0.5s infinite alternate;
 }
 
 @keyframes pulse {
@@ -46,7 +43,7 @@
     to { transform: scale(1.1); }
 }
 
-/* --- SLIDER BAR (SPACE PHASE) --- */
+/* --- SLIDER BAR (Giữ nguyên) --- */
 .slider-container {
     width: 80%;
     height: 40px;
@@ -58,18 +55,16 @@
     overflow: hidden;
 }
 
-/* Vùng an toàn (Target Zone) - Vùng màu vàng/xanh */
 .target-zone {
     position: absolute;
     left: 40%;
-    width: 20%; /* Rộng 20% */
+    width: 20%;
     height: 100%;
-    background: #f1c40f; /* Vàng */
+    background: #f1c40f;
     opacity: 0.7;
     box-shadow: 0 0 15px #f1c40f;
 }
 
-/* Con trỏ chạy qua lại */
 .slider-cursor {
     position: absolute;
     top: 0;
@@ -79,4 +74,185 @@
     background: #fff;
     box-shadow: 0 0 10px #fff;
     z-index: 10;
+}
+
+/* --- LOGIN / REGISTER "BRIGHT OCEAN THEME" (Đã chỉnh sửa) --- */
+:root {
+    --fish-water-deep: #0f4c75;
+    --fish-water-light: #3282b8;
+    --fish-accent: #bbe1fa;
+    --bobber-red: #ff5722;
+    --bobber-orange: #ff8a50;
+    --white-glass: rgba(255, 255, 255, 0.92);
+    --text-dark: #0f4c75;
+}
+
+body.auth-page {
+    /* Nền giữ nguyên độ sâu đại dương */
+    background: radial-gradient(circle at center, var(--fish-water-light) 0%, var(--fish-water-deep) 100%),
+                url('https://www.transparenttextures.com/patterns/cubes.png');
+    height: 100vh;
+    display: flex; /* Fallback */
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+.login-container {
+    /* Căn giữa tuyệt đối */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    width: 90%;
+    max-width: 420px;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+.login-box {
+    /* --- NỀN TRẮNG SỨ (Thay đổi chính) --- */
+    background: var(--white-glass);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    
+    /* Viền và bóng đổ sáng sủa hơn */
+    border: 1px solid rgba(187, 225, 250, 0.8);
+    border-radius: 24px;
+    padding: 40px 30px;
+    box-shadow: 0 20px 40px rgba(15, 76, 117, 0.3);
+    
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: var(--text-dark); /* Chữ màu đậm để hiện trên nền trắng */
+}
+
+/* Sóng nước bên dưới (Màu nhạt hơn cho hợp nền trắng) */
+.login-box::after {
+    content: '';
+    position: absolute;
+    bottom: -40px;
+    left: 0;
+    width: 200%;
+    height: 80px;
+    background: rgba(50, 130, 184, 0.15); /* Sóng xanh nhạt */
+    border-radius: 50%;
+    animation: wave 5s linear infinite;
+    z-index: 0;
+}
+
+@keyframes wave {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.login-box h2 {
+    margin-bottom: 25px;
+    font-size: 2.2em;
+    font-weight: 800;
+    color: var(--text-dark); /* Tiêu đề màu đậm */
+    text-shadow: none;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+}
+
+.input-group {
+    position: relative;
+    z-index: 1;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #3282b8; /* Label màu xanh trung tính */
+    font-weight: 700;
+    font-size: 0.95em;
+    text-align: left;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px;
+    
+    /* Input nền sáng */
+    background: #f0f9ff;
+    border: 2px solid #bbe1fa;
+    border-radius: 12px;
+    
+    color: #1b262c; /* Chữ khi gõ màu đen/xanh đen */
+    font-size: 1rem;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    border-color: #3282b8;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(187, 225, 250, 0.5);
+}
+
+.input-group input::placeholder {
+    color: #94a3b8;
+}
+
+/* Nút bấm (Giữ nguyên màu Cam Phao Câu) */
+.btn-primary {
+    width: 100%;
+    padding: 16px;
+    margin-top: 15px;
+    background: linear-gradient(135deg, var(--bobber-red), var(--bobber-orange));
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1.1em;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    z-index: 10;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 87, 34, 0.5);
+    filter: brightness(1.1);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.switch-link {
+    margin-top: 25px;
+    position: relative;
+    z-index: 10;
+}
+
+.switch-link p { color: #52616b; } /* Text phụ màu xám đậm */
+
+.switch-link a {
+    color: var(--text-dark);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.switch-link a:hover {
+    color: #3282b8;
+    text-decoration: underline;
+}
+
+.login-icon {
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
 }
