@@ -9,16 +9,19 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 
 def create_app(config_class=Config):
-    # --- CẤU HÌNH ĐƯỜNG DẪN FRONTEND ---
-    # Lấy đường dẫn hiện tại của file __init__.py
+    # --- CẤU HÌNH ĐƯỜNG DẪN FRONTEND (FIX ROBUST) ---
+    # Lấy đường dẫn tuyệt đối của file này
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    # Trỏ ngược ra 2 cấp để lấy folder frontend (app -> backend -> root -> frontend)
-    frontend_dir = os.path.join(current_dir, '..', '..', 'frontend')
+    
+    # Đi ngược ra 2 cấp: app -> backend -> [ROOT] -> frontend
+    # backend/app -> backend -> ROOT
+    root_dir = os.path.dirname(os.path.dirname(current_dir)) 
+    frontend_dir = os.path.join(root_dir, 'frontend')
     
     template_dir = os.path.join(frontend_dir, 'templates')
     static_dir = os.path.join(frontend_dir, 'static')
 
-    # Khởi tạo Flask với đường dẫn template/static tùy chỉnh
+    # Khởi tạo Flask với đường dẫn template/static chính xác
     app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
     app.config.from_object(config_class)
 
@@ -28,14 +31,12 @@ def create_app(config_class=Config):
     login_manager.login_view = 'auth.login' # Tên hàm view khi chưa login
 
     # Đăng ký Blueprints (Routes)
-    # Lưu ý: Import bên trong hàm để tránh lỗi vòng lặp (circular import)
     from app.routes.auth import auth_bp
     from app.routes.game import game_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(game_bp)
     
-    # Route test nhanh để đảm bảo server chạy
     @app.route('/test')
     def test_connection():
         return "Server Backend đã kết nối thành công với Frontend!"

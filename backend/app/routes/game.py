@@ -131,7 +131,6 @@ def catch_fish():
 @game_bp.route('/api/sell', methods=['POST'])
 @login_required
 def sell_fish():
-    # ... (Giữ nguyên code cũ) ...
     data = request.json
     fish_id = data.get('fish_id')
     item = Inventory.query.filter_by(user_id=current_user.id, fish_id=fish_id).first()

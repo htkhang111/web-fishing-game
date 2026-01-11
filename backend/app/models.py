@@ -18,7 +18,8 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Quan hệ: Một người có nhiều món trong túi đồ
-    inventory_items = db.relationship('Inventory', backref='owner', lazy='dynamic')
+    # lazy=True: Tự động tải danh sách items khi truy cập
+    inventory_items = db.relationship('Inventory', backref='owner', lazy=True)
 
     # Hàm xử lý mật khẩu
     def set_password(self, password):

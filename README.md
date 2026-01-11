@@ -80,7 +80,7 @@ python run.py
 
 🔥 Lưu ý: Lần chạy đầu tiên, hệ thống sẽ tự động tạo Database và nạp dữ liệu cá mẫu. Bạn không cần setup gì thêm!
 
-Truy cập game tại: http://127.0.0.1:5000
+Truy cập game tại: (...)
 
 ## 🎮 Cách Chơi
 
