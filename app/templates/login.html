@@ -1,25 +1,127 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if register_mode %}Đăng Ký{% else %}Đăng Nhập{% endif %} - Fishing Game</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+    <div class="login">
+        <video class="login__video" autoplay muted loop playsinline>
+            <source src="{{ url_for('static', filename='img/bg_video.mp4') }}" type="video/mp4">
+            <img src="{{ url_for('static', filename='img/background_login.jpg') }}" alt="background">
+        </video>
+        
+        <div class="login__overlay"></div>
 
-{% block content %}
-<div class="login-wrapper">
-    <div class="login-box">
-        <h2>{{ 'Đăng Ký' if register_mode else 'Đăng Nhập' }}</h2>
-        <form method="POST" action="{{ url_for('auth.register') if register_mode else url_for('auth.login') }}">
-            <div class="input-group">
-                <input type="text" name="username" placeholder="Tên đăng nhập" required>
+        <audio id="bg-music" loop>
+            <source src="{{ url_for('static', filename='img/bg_sound.mp3') }}" type="audio/mpeg">
+        </audio>
+
+        <form action="{{ url_for('auth.register') if register_mode else url_for('auth.login') }}" method="POST" class="login__form">
+            
+            <h1 class="login__title">
+                {% if register_mode %}Đăng Ký{% else %}Đăng Nhập{% endif %}
+            </h1>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div style="margin-bottom: 15px;">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="login__content">
+                <div class="login__box">
+                    <i class="ri-user-3-line login__icon"></i>
+                    <div class="login__box-input">
+                        <input type="text" name="username" required class="login__input" id="login-email" placeholder=" ">
+                        <label for="login-email" class="login__label">Tên nhân vật</label>
+                    </div>
+                </div>
+
+                <div class="login__box">
+                    <i class="ri-lock-2-line login__icon"></i>
+                    <div class="login__box-input">
+                        <input type="password" name="password" required class="login__input" id="login-pass" placeholder=" ">
+                        <label for="login-pass" class="login__label">Mật khẩu</label>
+                        <i class="ri-eye-off-line login__eye" id="login-eye"></i>
+                    </div>
+                </div>
             </div>
-            <div class="input-group">
-                <input type="password" name="password" placeholder="Mật khẩu" required>
+
+            <button type="submit" class="login__button">
+                {% if register_mode %}THAM GIA{% else %}VÀO GAME{% endif %}
+            </button>
+
+            <p class="login__register">
+                {% if register_mode %}
+                    Đã có tài khoản? <a href="{{ url_for('auth.login') }}">Đăng nhập</a>
+                {% else %}
+                    Chưa có tài khoản? <a href="{{ url_for('auth.register') }}">Đăng ký ngay</a>
+                {% endif %}
+            </p>
+            
+            <div id="music-btn" class="login__register" style="cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; opacity: 0.8;">
+                <i id="music-icon" class="ri-volume-mute-line" style="font-size: 1.2rem;"></i>
+                <span id="music-text">Bật nhạc nền</span>
             </div>
-            <button type="submit">{{ 'Đăng Ký' if register_mode else 'Đăng Nhập' }}</button>
         </form>
-        <div class="switch-link">
-            {% if register_mode %}
-                <a href="{{ url_for('auth.login') }}">Về đăng nhập</a>
-            {% else %}
-                <a href="{{ url_for('auth.register') }}">Đăng ký tài khoản mới</a>
-            {% endif %}
-        </div>
     </div>
-</div>
-{% endblock %}
+    
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const audio = document.getElementById('bg-music');
+            const musicBtn = document.getElementById('music-btn');
+            const musicIcon = document.getElementById('music-icon');
+            const musicText = document.getElementById('music-text');
+
+            if (!audio || !musicBtn) return;
+
+            // Set âm lượng vừa phải
+            audio.volume = 0.5;
+
+            // Hàm cập nhật giao diện nút
+            function updateUI(isPlaying) {
+                if (isPlaying) {
+                    musicIcon.className = 'ri-volume-up-line'; // Icon loa
+                    musicText.innerText = "Tắt nhạc nền";
+                } else {
+                    musicIcon.className = 'ri-volume-mute-line'; // Icon câm
+                    musicText.innerText = "Bật nhạc nền";
+                }
+            }
+
+            // Xử lý khi bấm nút
+            musicBtn.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play().then(() => {
+                        updateUI(true);
+                    }).catch(err => console.log("Lỗi play:", err));
+                } else {
+                    audio.pause();
+                    updateUI(false);
+                }
+            });
+
+            // Tự động thử phát nhạc khi vào trang
+            // (Thường sẽ bị chặn nếu user chưa click gì cả, nhưng cứ thử)
+            audio.play().then(() => {
+                updateUI(true);
+            }).catch(() => {
+                // Nếu bị chặn thì UI mặc định là Tắt (đúng logic)
+                console.log("Autoplay blocked. Waiting for user interaction.");
+                updateUI(false);
+            });
+        });
+    </script>
+</body>
+</html>

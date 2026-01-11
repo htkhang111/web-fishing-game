@@ -1,0 +1,144 @@
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap");
+
+/*=============== VARIABLES CSS ===============*/
+:root {
+  --white-color: hsl(0, 0%, 100%);
+  --black-color: hsl(0, 0%, 0%);
+  --body-font: "Poppins", sans-serif;
+  --h1-font-size: 1.75rem;
+  --normal-font-size: 1rem;
+  --small-font-size: .813rem;
+  --font-medium: 500;
+}
+
+/*=============== BASE ===============*/
+* { box-sizing: border-box; padding: 0; margin: 0; }
+body, input, button { font-size: var(--normal-font-size); font-family: var(--body-font); }
+body { color: var(--white-color); background-color: #000; overflow: hidden; height: 100vh; }
+input, button { border: none; outline: none; }
+a { text-decoration: none; }
+
+/*=============== LOGIN ===============*/
+.login {
+  position: relative;
+  height: 100vh;
+  display: grid;
+  align-items: center;
+}
+
+/* --- VIDEO BACKGROUND --- */
+.login__video {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.login__overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* Lớp phủ tối */
+  z-index: 0;
+}
+
+/* --- FORM --- */
+.login__form {
+  position: relative;
+  z-index: 10;
+  background-color: hsla(0, 0%, 10%, 0.4); /* Trong suốt */
+  border: 2px solid var(--white-color);
+  margin-inline: 1.5rem;
+  padding: 2.5rem 1.5rem;
+  border-radius: 1rem;
+  backdrop-filter: blur(16px); /* Kính mờ */
+}
+
+.login__title {
+  text-align: center;
+  font-size: var(--h1-font-size);
+  font-weight: var(--font-medium);
+  margin-bottom: 2rem;
+}
+
+.login__content {
+  display: grid;
+  row-gap: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.login__box {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+  column-gap: 0.75rem;
+  border-bottom: 2px solid var(--white-color);
+}
+
+.login__icon, .login__eye { font-size: 1.25rem; }
+
+.login__input {
+  width: 100%;
+  padding-block: 0.8rem;
+  background: none;
+  color: var(--white-color);
+  position: relative;
+  z-index: 1;
+}
+
+.login__box-input { position: relative; }
+
+.login__label {
+  position: absolute;
+  left: 0; top: 13px;
+  font-weight: var(--font-medium);
+  transition: top 0.3s, font-size 0.3s;
+  pointer-events: none;
+}
+
+.login__eye {
+  position: absolute;
+  right: 0; top: 18px;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.login__button {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--white-color);
+  color: var(--black-color);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  margin-bottom: 2rem;
+  transition: 0.3s;
+}
+.login__button:hover {
+  background-color: hsla(0, 0%, 100%, 0.8);
+}
+
+.login__register { text-align: center; font-size: var(--small-font-size); }
+.login__register a { color: var(--white-color); font-weight: var(--font-medium); }
+.login__register a:hover { text-decoration: underline; }
+
+/* Input Focus Animation */
+.login__input:focus + .login__label,
+.login__input:not(:placeholder-shown).login__input:not(:focus) + .login__label {
+  top: -12px;
+  font-size: var(--small-font-size);
+}
+
+/* Flash Messages */
+.alert {
+    padding: 10px; margin-bottom: 15px; border-radius: 5px; text-align: center;
+}
+.alert-danger { background: rgba(220, 53, 69, 0.8); }
+.alert-success { background: rgba(40, 167, 69, 0.8); }
+
+/* Responsive */
+@media screen and (min-width: 576px) {
+  .login { justify-content: center; }
+  .login__form { width: 432px; padding: 4rem 3rem 3.5rem; border-radius: 1.5rem; }
+  .login__title { font-size: 2rem; }
+}
