@@ -142,3 +142,14 @@ a { text-decoration: none; }
   .login__form { width: 432px; padding: 4rem 3rem 3.5rem; border-radius: 1.5rem; }
   .login__title { font-size: 2rem; }
 }
+
+/*=============== FIX AUTOFILL UGLY BACKGROUND ===============*/
+/* Code này làm trong suốt cái nền vàng/xanh khi trình duyệt tự điền pass */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px rgba(0,0,0,0) inset !important;
+    -webkit-text-fill-color: var(--white-color) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
