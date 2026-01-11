@@ -14,9 +14,12 @@ env/
 backend/instance/
 
 # IDE settings
-.vscode/
 .idea/
 
 # OS junk
 .DS_Store
 Thumbs.db
+
+# Game Assets (Chặn upload file nặng)
+fishing-game-assets/
+fish/

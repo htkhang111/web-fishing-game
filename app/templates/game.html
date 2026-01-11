@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="game-wrapper">
+    <div class="header">
+        <h3>Ngư dân: {{ name }}</h3>
+        <a href="{{ url_for('auth.logout') }}" class="btn-logout">Đăng xuất</a>
+    </div>
+
+    <div id="game-container" style="position: relative; width: 800px; height: 600px; margin: 0 auto; border: 4px solid #4a90e2; background-color: #e0f7fa; border-radius: 10px; overflow: hidden;">
+        <canvas id="fishingCanvas" width="800" height="600"></canvas>
+        
+        <div id="loading-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10;">
+            <h2>Đang kết nối kho hải sản...</h2>
+            <p>Đang tải dữ liệu từ GitHub Pages</p>
+        </div>
+    </div>
+
+    <div class="score-board" style="text-align: center; margin-top: 10px;">
+        <h2>Điểm: <span id="score">0</span></h2>
+    </div>
+</div>
+
+<script>
+    const ASSETS_BASE_URL = "{{ assets_url }}";
+</script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}
